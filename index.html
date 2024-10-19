@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Páginas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none;
+        }
+        .search {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .search input {
+            padding: 10px;
+            width: 50%;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search">
+        <input type="text" id="searchInput" placeholder="Buscar páginas..." oninput="filterPages()">
+    </div>
+
+    <ul id="pageList"></ul>
+
+    <div class="pagination">
+        <button onclick="prevPage()">Anterior</button>
+        <span id="pageIndicator">Página 1</span>
+        <button onclick="nextPage()">Próxima</button>
+    </div>
+
+    <script>
+        // Simulação de lista de páginas .html da pasta pages
+        const pages = [
+            "1000 graus • Renascer Praise.html",
+            "A Ele a glória + Consagração • Diante Do Trono.html",
+            "A Ele a glória • Gabriela Rocha.html",
+            "A bênção • Gabriel Guedes.html",
+            "A coroa • Raiz Coral.html",
+            "A resposta • Thalles Roberto.html",
+            "Aclame ao Senhor • Diante Do Trono.html",
+            "Agradeço• Paulo César Baruk.html",
+            "Além do rio azul • Voz Da Verdade.html",
+            "Alfa e Ômega • Marine Friesen.html",
+            "Algo novo • Kemuel.html",
+            "Andando sobre as águas • Renascer Praise.html",
+            "Ao que é Digno • Comunhão & Adoração.html",
+            "Atos 2 • Gabriela Rocha.html",
+            "Águas purificadoras • Gabriela Rocha.html",
+            "Bem mais que tudo • Aline Barros • Sem modulação.html",
+            "Bem mais que tudo • Aline Barros.html",
+            "Bondade de Deus • Isaias Saad.html",
+            "Caminho no deserto • Soraya Moraes.html",
+            "Canção do Apocalipse • Diante Do Trono.html",
+            "Cantai • Ron Kenoly.html",
+            "Clamo Jesus • Paulo César Baruk.html",
+            "Comunhão e adoração • Comunhão & Adoração.html",
+            "Consagração • Aline Barros.html",
+            "Coração igual ao Teu • Diante Do Trono.html",
+            "Coração igual ao Teu(Medley) • Diante Do Trono.html",
+            "Corpo e família • Eli Soares.html",
+            "Creio que Tu és a cura • Gabriela Rocha.html",
+            "Cria em mim • Renascer Praise.html",
+            "Deixa Eu te usar • Sarah Farias.html",
+            "Deixa o céu descer • Renascer Praise.html",
+            "Dependo de Ti • Paulo César Baruk.html",
+            "Depois da cruz • Aline Barros.html",
+            "Descansarei • Etiene Pires.html",
+            "Deus cuida de mim • Eli Soares.html",
+            "Digno É o Senhor • Aline Barros.html",
+            "Eis-me aqui • Valesca Mayssa.html",
+            "Ele vem • Gabriel Guedes.html",
+            "Ele vem • Kemuel.html",
+            "Em Teus braços • Laura Souguellis.html",
+            "Em nome de Jesus • Aline Silva.html",
+            "Escape • Renascer Praise.html",
+            "Escudo • Voz Da Verdade — [240216].html",
+            "Escudo • Voz Da Verdade.html",
+            "Espírito Santo • Fernanda Brum.html",
+            "Espírito enche a minha vida(Pot-pourri) •  Gabriela Rocha.html",
+            "Estamos de pé • Marcus Salles.html",
+            "Eterno Deus • Vineyard.html",
+            "Eu Navegarei • Azmaveth Carneiro Silva.html",
+            "Eu Sou Teu Pai • Valesca Mayssa.html",
+            "Eu e minha casa • André Valadão.html",
+            "Eu me rendo • Renascer Praise.html",
+            "Eu quero ser santo • Eyshila.html",
+            "É de coração • Novo Caminho.html",
+            "Galileu • Fernandinho.html",
+            "Grande é o Senhor • Adhemar De Campos.html",
+            "Grande é o Senhor•Pot-pourri• Jozyanne.html",
+            "HTML-20241019T023700Z-001.zip",
+            "Há um lugar • Renascer Praise.html",
+            "Hosana • Mariana Valadão.html",
+            "Hosanna • Kirk Franklin.html",
+            "Humildade • Deigma Marques.html",
+            "Igreja • Renascer Praise.html",
+            "Jeová Jireh • Aline Barros.html",
+            "Jesus é o caminho • Heloisa Rosa.html",
+            "Jesus, o plano perfeito • Renascer Praise.html",
+            "Louvor e honra • Ron Kenoly.html",
+            "Lugar secreto • Gabriela Rocha.html",
+            "Maranata • Avivah.html",
+            "Maravilhosa graça • Comunidade Da Graça•.html",
+            "Me ama • Diante Do Trono.html",
+            "Me atraiu • Gabriela Rocha.html",
+            "Me atraiu(Medley) • Gabriela Rocha & Fernanda Brum.html",
+            "Me derramar • IBAB Celebração.html",
+            "Meu respirar + Meu prazer • Gabriela Rocha.html",
+            "Milagre no altar • Renascer Praise.html",
+            "Milagre • André Valadão.html",
+            "Minha casa e eu • Comunhão & Adoração.html",
+            "Na casa • Paulo César Baruk.html",
+            "Na unção de Deus • Elaine De Jesus.html",
+            "Nada além do Sangue • Fernandinho.html",
+            "Nada pode calar um adorador • Eyshila.html",
+            "Nada temerei • Ministério Atitude.html",
+            "Não mais escravos • Aline Barros.html",
+            "Nenhuma condenação há • Gabriela Rocha.html",
+            "Novo dia, novo tempo • Renascer Praise.html",
+            "Nunca me deixou • IBAB.html",
+            "O Cordeiro • Raiz Coral.html",
+            "O espírito de Deus + Na sala do Trono • Alda Célia.html",
+            "O mover do Espírito • Gabriela Rocha.html",
+            "O que Sua Glória fez comigo • Fernanda Brum_.html",
+            "Oferta de amor • Ministério Koinonya.html",
+            "Oh quão lindo esse Nome é • Kemuel.html",
+            "Ora vem • Ministério Sarando A Terra Ferida.html",
+            "Os sonhos de Deus • Ludmila Ferber.html",
+            "Ousador amor • Isaias Saad.html",
+            "Pai Nosso • Pedras Vivas.html",
+            "Pelo Sangue • Renascer Praise.html",
+            "Pelo poder do Teu amor • Aline Barros.html",
+            "Perdão • Kleber Lucas.html",
+            "Plano melhor • Renascer Praise.html",
+            "Poderoso Deus • André Aquino.html",
+            "Posso clamar • Eyshila.html",
+            "Pra sempre • Avivah.html",
+            "Preciso de Ti • Diante Do Trono.html",
+            "Promessa • Renascer Praise.html",
+            "Quão Grande é o meu Deus • Soraya Moraes — [241016].html",
+            "Quebrantado • Vineyard.html",
+            "Quero subir • Diante Do Trono.html",
+            "Recebe minha adoração • Renascer Praise.html",
+            "Reina em mim • Vineyard.html",
+            "Relance•Pot-pouri• Diante Do Trono.html",
+            "Rendido estou • Aline Barros.html",
+            "Renova-me • Aline Barros.html",
+            "Repertório de Batismo • Cantores variados.html",
+            "Restitui • Renascer Praise.html",
+            "Rompendo em fé • Comunidade Da Zona Sul.html",
+            "Santo Espírito • Laura Souguellis.html",
+            "Santo é o Cordeiro(Renascer Praise) - Coristas Soprano & Contralto.html",
+            "Santo é o Cordeiro(Renascer Praise) - Coristas Tenor.html",
+            "Santo é o Cordeiro(Renascer Praise) - Soprano & Contralto.html",
+            "Santo é o Cordeiro(Renascer Praise) - Tenor 1.html",
+            "Santo é o Cordeiro(Renascer Praise) - Tenor 2.html",
+            "Santo pra sempre • Gabriel Guedes.html",
+            "Santo pra sempre • Gabriel Guedes•Coristas•.html",
+            "Santo, Santo, Santo • Renascer Praise.html",
+            "Se eu me humilhar • Discopraise.html",
+            "Senhor Te quero • Vineyard.html",
+            "Senhor formoso És(Medley) • Gabriela Rocha.html",
+            "Ser conhecido de Deus • Renascer Praise.html",
+            "Sobrevivi • Sarah Farias.html",
+            "Sonda-me, usa-me • Aline Barros.html",
+            "Sou um milagre • Discopraise.html",
+            "Tá chorando por quê • Mari Borges.html",
+            "Te agradeço • Diante Do Trono.html",
+            "Te agradeço•Pot-pourri• Diante Do Trono.html",
+            "Tempo de festa • Diante Do Trono.html",
+            "Teu Reino • Ministério Cristo Vive.html",
+            "Toca em mim • Comunhão & Adoração.html",
+            "Tributo a Iehovah • Eli Soares.html",
+            "Tu és Deus • Rachel Novaes.html",
+            "Tu és bom • Israel Houghton.html",
+            "Tu és•Pot-pourri • FHOP.html",
+            "Tua graça me basta • Davi Sacer.html",
+            "Tua unção • Ministério Nova Jerusalém.html",
+            "Tú és bom • Israel Houghton.html",
+            "Vem me buscar • Jefferson & Suellen.html",
+            "Vem, espírito de Deus • Alexandre Magnani.html",
+            "Vem, esta é a hora • Vineyard.html",
+            "Vencendo vem Jesus • CC & HCC.html",
+            "Venha o Teu reino • Davi Sacer.html",
+            "Vida aos sepulcros • IBAB Celebração.html",
+            "Vim para adorar-Te • Adoração & Adoradores.html",
+            "Vitorioso És • Gabriel Guedes.html",
+            "Yahweh se manifestará • Marcos Freire.html"
+        ];
+
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let filteredPages = [...pages];
+
+        function renderPageList() {
+            const pageList = document.getElementById('pageList');
+            pageList.innerHTML = '';
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pagesToShow = filteredPages.slice(start, end);
+
+            pagesToShow.forEach(page => {
+                const li = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = `pages/${page}`;
+                link.textContent = page;
+                li.appendChild(link);
+                pageList.appendChild(li);
+            });
+
+            document.getElementById('pageIndicator').textContent = `Página ${currentPage}`;
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPageList();
+            }
+        }
+
+        function nextPage() {
+            if (currentPage * itemsPerPage < filteredPages.length) {
+                currentPage++;
+                renderPageList();
+            }
+        }
+
+        function filterPages() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            filteredPages = pages.filter(page => page.toLowerCase().includes(searchInput));
+            currentPage = 1; // Reset para a primeira página após a busca
+            renderPageList();
+        }
+
+        // Inicializar a primeira renderização
+        renderPageList();
+    </script>
+
+</body>
+</html>
