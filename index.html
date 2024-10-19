@@ -8,27 +8,47 @@
         body {
             font-family: Arial, sans-serif;
         }
+
         .pagination {
             display: flex;
             justify-content: center;
             margin-top: 20px;
         }
+
         .pagination button {
             margin: 0 5px;
             padding: 10px;
             cursor: pointer;
         }
+
         .hidden {
             display: none;
         }
+
         .search {
             margin-bottom: 20px;
             text-align: center;
         }
+
         .search input {
             padding: 10px;
             width: 50%;
             font-size: 16px;
+        }
+
+        /* Estilo para os links */
+        .page-link {
+            text-decoration: none;
+            color: #007bff; /* Cor do link */
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: inline-block; /* Para aplicar padding */
+            transition: background-color 0.3s, color 0.3s; /* Efeitos de transição */
+        }
+
+        .page-link:hover {
+            background-color: #007bff; /* Cor de fundo ao passar o mouse */
+            color: white; /* Cor do texto ao passar o mouse */
         }
     </style>
 </head>
@@ -222,7 +242,8 @@
                 const li = document.createElement('li');
                 const link = document.createElement('a');
                 link.href = `pages/${page}`;
-                link.textContent = page;
+                link.textContent = page.replace('.html', '');
+                link.classList.add('page-link');
                 li.appendChild(link);
                 pageList.appendChild(li);
             });
